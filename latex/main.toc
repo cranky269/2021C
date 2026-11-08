@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {subsection}{\numberline {1\,.\,1}this is a subsection of Introduction}{1}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Q1}{1}{section.2}%
+\contentsline {subsection}{\numberline {2\,.\,1}全球气温十年增幅分析}{1}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,1}问题引入}{1}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,2}模型假设}{1}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,3}论断的形式化与指标定义}{2}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,4}观测层面的硬性比较}{2}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,5}不确定度下的稳健性检验}{2}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2\,.\,1\,.\,6}结论}{2}{subsubsection.2.1.6}%
+\contentsline {subsection}{\numberline {2\,.\,2}全球气温预测模型}{3}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2\,.\,2\,.\,1}基于 SARIMA 模型的全球气温预测}{3}{subsubsection.2.2.1}%
+\contentsline {section}{\numberline {3}Q2}{6}{section.3}%
+\contentsline {subsection}{\numberline {3\,.\,1}this is a subsection of q2}{6}{subsection.3.1}%
+\contentsline {section}{\numberline {4}References}{6}{section.4}%
+\contentsline {section}{\numberline {5}Appendix}{7}{section.5}%
+\contentsfinish 

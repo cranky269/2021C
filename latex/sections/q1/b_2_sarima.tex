@@ -1,0 +1,82 @@
+\subsubsection{基于 SARIMA 模型的全球气温预测}
+
+季节性变化是影响全球气温波动的重要因素。受地球公转、太阳辐射周期性变化等因素的影响，全球气温在时间序列上呈现出较为明显的周期性特征。与此同时，全球气温还受到长期气候变化趋势的影响，表现出一定的长期变化趋势。因此，全球气温时间序列同时具有季节性和趋势性两种特征。若仅采用传统的时间序列模型，可能难以充分刻画气温变化中的季节性规律与长期趋势之间的关系。
+
+为此，本文首先采用季节性自回归移动平均模型（Seasonal Autoregressive Integrated Moving Average Model，SARIMA）对历史全球气温数据进行建模，并以此预测未来全球气温水平。
+
+SARIMA 模型是在传统 ARIMA 模型基础上引入季节性差分、自回归和移动平均项后形成的扩展模型，能够同时描述时间序列中的长期变化特征和周期性波动规律。其基本形式表示为
+\begin{equation}
+    \mathrm{SARIMA}(p,d,q)(P,D,Q)_s.
+\end{equation}
+其中，各参数的含义如表~\ref{tab:q1b-sarima-params} 所示。
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{SARIMA 模型各参数含义}
+    \label{tab:q1b-sarima-params}
+    \begin{tabular}{@{}cp{3.2cm}p{6.5cm}@{}}
+        \toprule
+        参数 & 名称 & 数学含义 \\
+        \midrule
+        $p$ & AR 阶数 & 当前值与过去 $p$ 期观测值的线性关系\\
+        $d$ & 差分阶数 & 消除趋势、使序列平稳的差分次数\\
+        $q$ & MA 阶数 & 当前值与过去 $q$ 期误差的线性关系\\
+        $P$ & 季节 AR 阶数 & 当前值与过去 $P$ 个周期对应值的关系\\
+        $D$ & 季节差分阶数 & 消除季节非平稳的差分次数\\
+        $Q$ & 季节 MA 阶数 & 当前值与过去 $Q$ 个周期对应误差的关系\\
+        $s$ & 季节周期 & 每周期观测值数（月度取 $s=12$）\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+SARIMA 模型通过非季节性部分与季节性部分的组合，实现对时间序列不同变化特征的联合刻画。其一般数学表达式为
+\begin{equation}
+    \Phi_P(B^s)\phi_p(B)(1-B)^d(1-B^s)^D y_t
+    = c+\Theta_Q(B^s)\theta_q(B)\varepsilon_t.
+    \label{eq:q1b-sarima-general}
+\end{equation}
+其中：$y_t$ 表示时刻 $t$ 的全球气温观测值；$B$ 为滞后算子，满足 $By_t=y_{t-1}$；$\phi_p(B)$ 和 $\theta_q(B)$ 分别为非季节性自回归多项式和移动平均多项式；$\Phi_P(B^s)$ 和 $\Theta_Q(B^s)$ 分别为季节性自回归多项式和移动平均多项式；$(1-B)^d$ 表示非季节性差分算子；$(1-B^s)^D$ 表示季节性差分算子；$\varepsilon_t$ 为随机误差项，通常假设其服从均值为零、方差为常数的白噪声过程；$c$ 为常数项。
+
+根据不同参数组合下的时间序列平稳性分析，并结合模型拟合效果与残差诊断结果，本文最终选取
+\begin{equation}
+    \mathrm{SARIMA}(1,1,1)(1,1,1)_{12}
+    \label{eq:q1b-sarima-selected}
+\end{equation}
+作为全球气温预测模型。其中，非季节性部分采用一阶自回归、一阶差分和一阶移动平均结构，季节性部分同样采用一阶自回归、一阶季节性差分和一阶移动平均结构，季节周期设定为12个月，以刻画全球气温序列中的年度周期性变化。
+
+在模型实现方面，本文使用 Python 的 \texttt{statsmodels} 库中的 SARIMAX 类对历史月度全球气温数据进行参数估计与模型拟合，并在此基础上向后预测至2100年。考虑到月度气温数据存在较为明显的季节性波动，为了更加直观地观察全球气温的长期变化趋势，本文进一步计算每个自然年的全球平均气温。
+
+具体而言，设 $T_{y,m}$ 表示第 $y$ 年第 $m$ 个月的全球平均气温，则第 $y$ 年的年度平均气温定义为
+\begin{equation}
+    \overline{T}_y = \frac{1}{12}\sum_{m=1}^{12}T_{y,m}.
+    \label{eq:q1b-annual-mean}
+\end{equation}
+其中，$m=1,2,\ldots,12$。通过对每年12个月的气温预测值求算术平均，可以有效减弱月度季节性波动对长期气温变化趋势的影响，从而更加清晰地观察全球气温的年度变化情况。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\textwidth]{../python/Q1/SARIMA/01_original_temperature.png}
+    \caption{历史全球月均气温序列}
+    \label{fig:q1b-sarima-original}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\textwidth]{../python/Q1/SARIMA/04_sarima_forecast.png}
+    \caption{SARIMA 模型对全球气温的预测结果（至2100年）}
+    \label{fig:q1b-sarima-forecast}
+\end{figure}
+
+从预测结果可以看出，SARIMA 模型能够较好地延续历史气温序列中的周期性变化特征。在当前模型预测结果下，2050年和2100年的全球年度平均气温均未达到 $20\,{}^\circ\mathrm{C}$。
+
+为了进一步研究全球气温长期变化趋势，以及预测模型所反映的气温增长速度，本文在相同模型参数和预测设置下，将预测时间范围进一步延长至2500年，并继续计算各自然年的全球平均气温。预测结果显示，全球年度平均气温在2248年首次超过 $20\,{}^\circ\mathrm{C}$，达到约 $20.2\,{}^\circ\mathrm{C}$。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../python/Q1/SARIMA/SARIMA_Annual_Temperature_2022_2500.png}
+    \caption{SARIMA 模型预测的全球年度平均气温（2022--2500年）}
+    \label{fig:q1b-sarima-2500}
+\end{figure}
+
+上述结果表明，在 SARIMA 模型所刻画的历史时间序列变化规律下，全球气温呈现出长期上升的预测趋势。然而，需要指出的是，SARIMA 本质上属于基于历史统计规律的时间序列外推模型，其预测结果主要反映历史气温变化模式在未来的延续，并未显式考虑温室气体排放、气候反馈机制及未来气候政策等外部因素。因此，尤其对于预测跨度较长的2500年结果，应将其视为特定模型假设下的统计外推结果，而不能直接等同于未来真实气候变化的确定性预测。

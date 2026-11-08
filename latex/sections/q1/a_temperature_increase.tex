@@ -1,0 +1,85 @@
+\subsection{全球气温十年增幅分析}
+\label{sec:q1a}
+
+%================ 第 1 节：问题引入 ================
+\subsubsection{问题引入}
+
+近年来，全球极端高温事件频发：加拿大一度达到 $49.6\,^{\circ}\text{C}$，刷新北纬 $50^{\circ}$ 以北地区的纪录；美国加利福尼亚州死亡谷达到 $54.4\,^{\circ}\text{C}$；意大利更是以 $48.8\,^{\circ}\text{C}$ 刷新欧洲纪录。面对这些事件，"全球升温史无前例"成为一种普遍的公众直觉。与此同时，大气 $\mathrm{CO_2}$ 浓度由工业化前的约 $280\,\mathrm{ppm}$ 上升至 2004 年 3 月的 $377.7\,\mathrm{ppm}$，再到 2022 年 5 月的 $421\,\mathrm{ppm}$，温室效应的持续累积为升温提供了物理背景。图~\ref{fig:q1a_march_temp} 展示了历年 3 月全球平均温度的变化趋势，可见长期升温趋势客观存在，因而该论断并非空穴来风。
+
+然而，"2022 年 3 月全球气温的上升幅度，比此前\textbf{任何} 10 年期间都更大"是一个绝对化表述，其中的"任何"要求穷举历史所有 10 年窗口。这一论断是否经得起严格的量化检验，正是本节要回答的问题。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../image/Q1/01_march_temperature.png}
+  \caption{历年 3 月全球平均温度变化趋势（1850--2022）}
+  \label{fig:q1a_march_temp}
+\end{figure}
+
+%================ 第 2 节：模型假设 ================
+\subsubsection{模型假设}
+
+为开展后续分析，本文作如下基本假设：
+\begin{enumerate}[label=(\textbf{H}\arabic*),leftmargin=2.5em]
+  \item 以历年 3 月全球平均温度为对象，同月相减可消除季节性与基线差异，故可直接用绝对温度作差；
+  \item 温度测量不确定度近似服从正态分布，$\pm 2\sigma$ 对应约 $95\%$ 置信区间；
+  \item 不同年份的观测近似相互独立（蒙特卡洛抽样的前提）。
+\end{enumerate}
+
+%================ 第 3 节：形式化与指标 ================
+\subsubsection{论断的形式化与指标定义}
+
+该论断包含两个关键点：其一，"10 年增幅"如何度量；其二，"任何"意味着要穷举历史所有 10 年窗口。为此，本文以历年 3 月全球平均温度（字段 \texttt{Temperature\_Celsius}）为对象，定义以 $y$ 为终点年份的 10 年增幅为
+\begin{equation}
+  \Delta(y) = T(y,3) - T(y-10,3),
+  \label{eq:delta}
+\end{equation}
+同月相减使季节性与基线自然抵消。据此，论断等价于
+\begin{equation}
+  \Delta(2022) > \Delta(y), \quad \forall\, y \in \mathcal{Y},
+  \label{eq:claim}
+\end{equation}
+其中 $\mathcal{Y}$ 为所有历史窗口的终点年份集合。
+
+%================ 第 4 节：硬比较 ================
+\subsubsection{观测层面的硬性比较}
+
+首先在观测值层面直接检验。按式~\eqref{eq:delta} 计算目标窗口增幅 $\Delta(2022)$，并计算历史所有 10 年窗口的增幅后排序，得到其排名、百分位以及与历史最大值的差距。
+
+结果显示，2022 年 3 月对应的 10 年增幅为 0.539℃，在全部 163 个历史窗口中排名第 5 位（前 95.28\%），而历史最大增幅为 0.682℃，出现在 2019 年。可见其增幅虽然排名靠前，但并非历史第一。因此，仅凭观测值，该论断在字面上\textbf{不成立}。
+
+%================ 第 5 节：蒙特卡洛 ================
+\subsubsection{不确定度下的稳健性检验}
+
+观测值自带测量不确定度（数据列 \texttt{Temperature\_Uncertainty}），硬性比较的结论可能受噪声影响。为进一步检验上述结论的稳健性，本文采用蒙特卡洛模拟：对每个月的温度 $T$ 按其不确定度独立采样，得到新温度 $T'$；再由 $T'$ 重新计算 10 年增幅
+\begin{equation}
+  \Delta'(y) = T'(y,3) - T'(y-10,3),
+\end{equation}
+重复 $M$ 次，统计
+\begin{equation}
+  P = \Pr\Bigl(\Delta'(2022) = \max_{y \in \mathcal{Y}} \Delta'(y)\Bigr),
+  \label{eq:prob}
+\end{equation}
+即"论断成立"的概率。
+
+图~\ref{fig:q1a_mc} 展示了蒙特卡洛抽样下各窗口增幅的分布情况。结果表明，论断成立的概率 $P < 1\%$，即"2022 年 3 月为历史最大增幅"在绝大多数模拟中都不成立。因此，该论断\textbf{不成立}，且这一结论对测量不确定度是稳健的。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../image/Q1/03_mc_boxplots.png}
+  \caption{蒙特卡洛抽样下 10 年增幅的箱线图}
+  \label{fig:q1a_mc}
+\end{figure}
+
+%================ 第 6 节：结论 ================
+\subsubsection{结论}
+
+综上，本文\textbf{不认同}该论断：观测层面排名靠前但非第一，蒙特卡洛模拟下结论成立概率不足 $1\%$。因此，"2022 年 3 月增幅比任何历史 10 年都大"的说法不成立。
+
+进一步地，从数据可靠性看，早年温度测量不确定度较大（约 $0.3\sim 0.6\,^{\circ}\text{C}$），而现代测量不确定度较小（2022 年仅约 $0.07\,^{\circ}\text{C}$），表明近年数据更为可靠。即便如此，2022 年 3 月的增幅仍有约 $80\%$ 的概率位居历史前 $10\%$ 区间（图~\ref{fig:q1a_prob}），说明其增幅确实显著，公众"误认为论断成立"具有一定合理性。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{../image/Q1/04_prob_vs_n.png}
+  \caption{2022 年 3 月增幅位居历史前n名的概率随 $n$ 的变化}
+  \label{fig:q1a_prob}
+\end{figure}
